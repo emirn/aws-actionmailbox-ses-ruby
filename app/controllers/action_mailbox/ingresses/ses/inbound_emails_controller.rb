@@ -34,7 +34,7 @@ module ActionMailbox
         before_action :verify_authenticity, :validate_topic, :confirm_subscription
 
         def create
-          head :bad_request unless notification.message_content.present?
+          return head :bad_request unless notification.message_content.present?
 
           ActionMailbox::InboundEmail.create_and_extract_message_id!(notification.message_content)
           head :no_content
@@ -43,7 +43,8 @@ module ActionMailbox
         private
 
         def verify_authenticity
-          head :bad_request unless notification.present?
+          return head :bad_request unless notification.present?
+
           head :unauthorized unless notification.verified?
         end
 
